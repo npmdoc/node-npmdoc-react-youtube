@@ -1,0 +1,201 @@
+<html><head></head><body><div class="apidocDiv">
+<style>
+/*csslint
+*/
+.apidocDiv {
+    background: #fff;
+    font-family: Arial, Helvetica, sans-serif;
+}
+.apidocDiv a[href] {
+    color: #33f;
+    font-weight: bold;
+    text-decoration: none;
+}
+.apidocDiv a[href]:hover {
+    text-decoration: underline;
+}
+.apidocCodeCommentSpan {
+    background: #bbf;
+    color: #000;
+    display: block;
+}
+.apidocCodeKeywordSpan {
+    color: #d00;
+    font-weight: bold;
+}
+.apidocCodePre {
+    background: #eef;
+    border: 1px solid;
+    color: #777;
+    padding: 5px;
+    white-space: pre-wrap;
+}
+.apidocFooterDiv {
+    margin-top: 20px;
+    text-align: center;
+}
+.apidocModuleLi {
+    margin-top: 10px;
+}
+.apidocSectionDiv {
+    border-top: 1px solid;
+    margin-top: 20px;
+}
+.apidocSignatureSpan {
+    color: #777;
+    font-weight: bold;
+}
+</style>
+<h1>api documentation for
+    <a href="https://github.com/compedit/react-youtube">react-youtube (v7.4.0)</a>
+</h1>
+<h4>react.js powered YouTube player component</h4>
+<div class="apidocSectionDiv"><a href="#apidoc.tableOfContents" id="apidoc.tableOfContents"><h1>table of contents</h1></a><ol>
+
+    <li class="apidocModuleLi"><a href="#apidoc.module.react-youtube">module react-youtube</a><ol>
+
+        <li>
+
+            <a class="apidocElementLiA" href="#apidoc.element.react-youtube.default">
+            function <span class="apidocSignatureSpan">react-youtube.</span>default
+            <span class="apidocSignatureSpan">(props)</span>
+            </a>
+
+        </li>
+
+    </ol></li>
+
+</ol></div>
+
+<div class="apidocSectionDiv">
+<h1><a href="#apidoc.module.react-youtube" id="apidoc.module.react-youtube">module react-youtube</a></h1>
+
+
+    <h2>
+        <a href="#apidoc.element.react-youtube.default" id="apidoc.element.react-youtube.default">
+        function <span class="apidocSignatureSpan">react-youtube.</span>default
+        <span class="apidocSignatureSpan">(props)</span>
+        </a>
+    </h2>
+    <ul>
+    <li>description and source-code<pre class="apidocCodePre">function YouTube(props) {
+  _classCallCheck(this, YouTube);
+
+  var _this = _possibleConstructorReturn(this, (YouTube.__proto__ || Object.getPrototypeOf(YouTube)).call(this, props));
+
+  _this.onPlayerReady = function (event) {
+    return _this.props.onReady(event);
+  };
+
+  _this.onPlayerError = function (event) {
+    return _this.props.onError(event);
+  };
+
+  _this.onPlayerStateChange = function (event) {
+    _this.props.onStateChange(event);
+    switch (event.data) {
+
+      case YouTube.PlayerState.ENDED:
+        _this.props.onEnd(event);
+        break;
+
+      case YouTube.PlayerState.PLAYING:
+        _this.props.onPlay(event);
+        break;
+
+      case YouTube.PlayerState.PAUSED:
+        _this.props.onPause(event);
+        break;
+
+      default:
+        return;
+    }
+  };
+
+  _this.onPlayerPlaybackRateChange = function (event) {
+    return _this.props.onPlaybackRateChange(event);
+  };
+
+  _this.onPlayerPlaybackQualityChange = function (event) {
+    return _this.props.onPlaybackQualityChange(event);
+  };
+
+  _this.createPlayer = function () {
+    // do not attempt to create a player server-side, it won't work
+    if (typeof document === 'undefined') return;
+    // create player
+    var playerOpts = _extends({}, _this.props.opts, {
+      // preload the `videoId` video if one is already given
+      videoId: _this.props.videoId
+    });
+    _this.internalPlayer = (0, _youtubePlayer2.default)(_this.container, playerOpts);
+    // attach event handlers
+    _this.internalPlayer.on('ready', _this.onPlayerReady);
+    _this.internalPlayer.on('error', _this.onPlayerError);
+    _this.internalPlayer.on('stateChange', _this.onPlayerStateChange);
+    _this.internalPlayer.on('playbackRateChange', _this.onPlayerPlaybackRateChange);
+    _this.internalPlayer.on('playbackQualityChange', _this.onPlayerPlaybackQualityChange);
+  };
+
+  _this.resetPlayer = function () {
+    return _this.internalPlayer.destroy().then(_this.createPlayer);
+  };
+
+  _this.updatePlayer = function () {
+    _this.internalPlayer.getIframe().then(function (iframe) {
+      iframe.setAttribute('id', _this.props.id);
+      iframe.setAttribute('class', _this.props.className);
+    });
+  };
+
+  _this.updateVideo = function () {
+    if (typeof _this.props.videoId === 'undefined' || _this.props.videoId === null) {
+      _this.internalPlayer.stopVideo();
+      return;
+    }
+
+    // set queueing options
+    var autoplay = false;
+    var opts = {
+      videoId: _this.props.videoId
+    };
+    if ('playerVars' in _this.props.opts) {
+      autoplay = _this.props.opts.playerVars.autoplay === 1;
+      if ('start' in _this.props.opts.playerVars) {
+        opts.startSeconds = _this.props.opts.playerVars.start;
+      }
+      if ('end' in _this.props.opts.playerVars) {
+        opts.endSeconds = _this.props.opts.playerVars.end;
+      }
+    }
+
+    // if autoplay is enabled loadVideoById
+    if (autoplay) {
+      _this.internalPlayer.loadVideoById(opts);
+      return;
+    }
+    // default behaviour just cues the video
+    _this.internalPlayer.cueVideoById(opts);
+  };
+
+  _this.refContainer = function (container) {
+    _this.container = container;
+  };
+
+  _this.container = null;
+  _this.internalPlayer = null;
+  return _this;
+}</pre></li>
+    <li>example usage<pre class="apidocCodePre">n/a</pre></li>
+    </ul>
+
+
+</div>
+
+<div class="apidocFooterDiv">
+    [ this document was created with
+    <a href="https://github.com/kaizhu256/node-utility2" target="_blank">utility2</a>
+    ]
+</div>
+</div>
+</body></html>
